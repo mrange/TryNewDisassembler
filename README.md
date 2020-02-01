@@ -1,3 +1,5 @@
+Issue: https://github.com/dotnet/runtime/issues/31613
+
 Hi.
 
 I saw a performance regression going from .NET 4.8 to dotnet core 3.1. It's small so in practice this might not hurt most users but I thought it's better to create an issue than keeping mum.
