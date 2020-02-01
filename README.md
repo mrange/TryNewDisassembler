@@ -42,6 +42,8 @@ type Benchmarks () =
 Benchmark dotnet reports:
 
 ```
+$ dotnet run -c Release -f netcoreapp3.1 --filter '*' --runtimes net48 netcoreapp3.1
+...
 |               Method |       Runtime |     Toolchain | Count |        Mean |     Error |    StdDev | Ratio | RatioSD | Code Size |
 |--------------------- |-------------- |-------------- |------ |------------:|----------:|----------:|------:|--------:|----------:|
 | SimplePushStreamTest |      .NET 4.8 |         net48 |   100 |    400.6 ns |   3.92 ns |   3.67 ns |  1.00 |    0.00 |     272 B |
