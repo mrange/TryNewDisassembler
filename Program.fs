@@ -54,6 +54,7 @@ module PerformanceRegression =
       let summary = b.Run(argv, config)
       printfn "%A" summary
 
+// Run with: dotnet run -c Release -f netcoreapp3.1 --filter '*' --runtimes net48 netcoreapp3.1
 [<EntryPoint>]
 let main argv =
   PerformanceRegression.Tests.run argv
