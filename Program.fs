@@ -1,10 +1,7 @@
-module TailCall =
+module PerformanceRegression =
   open System
   open System.Linq
   open System.Diagnostics
-
-  //    let inline push      r v      = match r v with () -> ()
-  //    let inline push      r v      = r v
 
   // Minimalistic PushStream
   //  A PushStream accepts a receiver function that will be called
@@ -28,34 +25,14 @@ module TailCall =
     open BenchmarkDotNet.Attributes
     open BenchmarkDotNet.Configs
     open BenchmarkDotNet.Jobs
-    open BenchmarkDotNet.Horology;
+    open BenchmarkDotNet.Horology
     open BenchmarkDotNet.Running
     open BenchmarkDotNet.Diagnostics.Windows.Configs
 
-    [<TailCallDiagnoser>]
     [<DisassemblyDiagnoser>]
     type Benchmarks () =
-      [<Params (10000, 1000, 100)>] 
+      [<Params (10000, 100)>] 
       member val public Count = 100 with get, set
-
-      [<Benchmark>]
-      member x.SimpleImperativeTest () =
-        let mutable i   = x.Count
-        let mutable sum = 0L
-        while i >= 0 do
-          let v =  int64 i
-          i     <- i - 1
-          if (v &&& 1L) = 0L then
-            sum <- sum + (v + 1L)
-        sum
-
-      [<Benchmark>]
-      member x.SimpleLinqTest () =
-        Enumerable.Range(0, x.Count)
-          .Select(int64)
-          .Where(fun v -> (v &&& 1L) = 0L)
-          .Select((+) 1L)
-          .Sum()
 
       [<Benchmark>]
       member x.SimplePushStreamTest () =
@@ -65,28 +42,9 @@ module TailCall =
         |> PushStream.map     ((+) 1L)
         |> PushStream.sum
 
-      [<Benchmark>]
-      member x.StructLinqStreamTest () =
-        Enumerable.Range(0, x.Count)
-          .Select(int64)
-          .Select(fun v -> struct ((v &&& 1L) = 0L, v))
-          .Select(fun struct (b, v) -> struct (b, v + 1L))
-          .Select(fun struct (b, v) -> if b then v else 0L)
-          .Sum()
-
-      [<Benchmark>]
-      member x.StructPushStreamTest () =
-        PushStream.fromRange 0 x.Count
-        |> PushStream.map     int64
-        |> PushStream.map     (fun v -> struct ((v &&& 1L) = 0L, v))
-        |> PushStream.map     (fun struct (b, v) -> struct (b, v + 1L))
-        |> PushStream.map     (fun struct (b, v) -> if b then v else 0L)
-        |> PushStream.sum
-
-
     let run argv = 
       let job = Job.Default
-                    .WithWarmupCount(1) // 1 warmup is enough for our purpose
+                    .WithWarmupCount(30)
                     .WithIterationTime(TimeInterval.FromMilliseconds(250.0)) // the default is 0.5s per iteration, which is slighlty too much for us
                     .WithMinIterationCount(15)
                     .WithMaxIterationCount(20)
@@ -98,5 +56,5 @@ module TailCall =
 
 [<EntryPoint>]
 let main argv =
-  TailCall.Tests.run argv
+  PerformanceRegression.Tests.run argv
   0

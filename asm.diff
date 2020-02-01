@@ -1,0 +1,46 @@
+--- dotnetcore.asm
++++ net48.asm
+@@ -1,4 +1,4 @@
+-; dotnet core 3.1
++; .net v48
+ 
+ ; PushStream.fromRange  0 x.Count
+ LOOP:
+@@ -12,7 +12,6 @@
+ jne     LOOP
+ 
+ ; PushStream.map     int64
+-nop     dword ptr [rax+rax]
+ mov     rcx,qword ptr [rcx+8]
+ movsxd  rdx,edx
+ mov     rax,qword ptr [rcx]
+@@ -21,8 +20,7 @@
+ jmp     rax
+ 
+ ; PushStream.filter  (fun v -> (v &&& 1L) = 0L)
+-nop     dword ptr [rax+rax]
+-mov     eax,edx
++mov     rax,rdx
+ test    al,1
+ jne     BAILOUT
+ mov     rcx,qword ptr [rcx+8]
+@@ -35,7 +33,6 @@
+ ret
+ 
+ ; PushStream.map     ((+) 1L)
+-nop     dword ptr [rax+rax]
+ mov     rcx,qword ptr [rcx+8]
+ inc     rdx
+ mov     rax,qword ptr [rcx]
+@@ -44,11 +41,9 @@
+ jmp     rax
+ 
+ ; PushStream.sum
+-nop     dword ptr [rax+rax]
+ mov     rax,qword ptr [rcx+8]
+ mov     rcx,rax
+ add     rdx,qword ptr [rax+8]
+ mov     qword ptr [rcx+8],rdx
+ xor     eax,eax
+ ret
+-
